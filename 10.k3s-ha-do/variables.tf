@@ -23,3 +23,8 @@ variable "agent_count" {
   type    = number
   default = 1
 }
+
+variable "flannel_backend" {
+  type    = string
+  default = "none"
+}

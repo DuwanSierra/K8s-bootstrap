@@ -1,6 +1,6 @@
 # Required
-do_token = "Test"
-ssh_key_name = "Test"
+do_token = "test"
+ssh_key_name = "test"
 agent_count = 1
 server_count = 1
 
@@ -15,6 +15,6 @@ region = "nyc3"
 # database_size       = "db-s-1vcpu-1gb"
 # database_node_count = 1
 
-# flannel_backend = "vxlan" # ipsec | wireguard-native
+# flannel_backend = "none" # ipsec | wireguard-native | none
 # ingress = "traefik"       # none | traefik | nginx | kong | kong_pg
 # cert_manager   = true

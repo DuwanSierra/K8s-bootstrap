@@ -1,0 +1,30 @@
+### Terraform
+.terraform/
+.terraform.*
+.terragrunt-cache/
+.tflint.d/
+
+# Terraform state
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+terraform.tfvars.json
+
+# Local variables & secrets
+*.tfvars
+*.auto.tfvars
+*.auto.tfvars.json
+
+# Plan outputs
+*.plan
+*.tfplan
+
+# Misc tooling
+.terraform.lock.hcl
+.tfsec/
+.checkov
