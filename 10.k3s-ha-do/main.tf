@@ -12,4 +12,6 @@ module "k3s" {
   region       = var.region
   server_count = var.server_count
   agent_count  = var.agent_count
+  database_user = var.database_user
+  flannel_backend = var.flannel_backend
 }

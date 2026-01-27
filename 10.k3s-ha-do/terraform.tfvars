@@ -3,7 +3,8 @@ do_token = "test"
 ssh_key_name = "test"
 agent_count = 1
 server_count = 1
-
+#database_user = "doadmin"
+#flannel_backend = "vxlan"
 # Optional tweaks
 region = "nyc3"
 # server_count = 2

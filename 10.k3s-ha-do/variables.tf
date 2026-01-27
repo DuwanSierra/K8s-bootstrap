@@ -26,5 +26,9 @@ variable "agent_count" {
 
 variable "flannel_backend" {
   type    = string
-  default = "none"
+  default = "vxlan"
+}
+variable "database_user" {
+  type    = string
+  default = "k3s_default_user"
 }
