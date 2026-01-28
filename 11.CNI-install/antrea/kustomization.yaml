@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - https://github.com/antrea-io/antrea/releases/download/v2.5.1/antrea.yml
+
+patchesStrategicMerge:
+  - patches/antrea-agent-config.yaml
+
+configMapGenerator:
+  - name: antrea-install-metadata
+    literals:
+      cni: antrea
+      release: v2.5.1
+      clusterNetworkCIDR: 10.42.0.0/16
+      serviceCIDR: 10.43.0.0/16
+      trafficEncapMode: encap
+
+generatorOptions:
+  disableNameSuffixHash: true

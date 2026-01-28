@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - https://raw.githubusercontent.com/projectcalico/calico/v3.31.3/manifests/calico.yaml
+
+patchesStrategicMerge:
+  - patches/calico-node-env-patch.yaml
+
+configMapGenerator:
+  - name: calico-install-metadata
+    literals:
+      cni: calico
+      release: v3.27.3
+      clusterNetworkCIDR: 10.42.0.0/16
+      serviceCIDR: 10.43.0.0/16
+      ipAutodetection: can-reach=10.0.0.1
+
+generatorOptions:
+  disableNameSuffixHash: true
