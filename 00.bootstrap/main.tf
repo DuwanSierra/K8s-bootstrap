@@ -54,7 +54,7 @@ module "k3s" {
 }
 
 locals {
-  kubeconfig_endpoint_ip = var.kubeconfig_use_server_ip ? module.k3s.cluster_summary.servers[0].ip_public : module.k3s.cluster_summary.api_server_ip
+  kubeconfig_endpoint_ip = module.k3s.cluster_summary.api_server_ip
 }
 
 resource "null_resource" "artifacts_dir" {
