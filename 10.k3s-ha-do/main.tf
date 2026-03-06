@@ -1,4 +1,3 @@
-# (Opcional pero recomendado) traer fingerprint por nombre desde tu cuenta DO
 data "digitalocean_ssh_key" "this" {
   name = var.ssh_key_name
 }
@@ -13,5 +12,4 @@ module "k3s" {
   server_count = var.server_count
   agent_count  = var.agent_count
   database_user = var.database_user
-  flannel_backend = var.flannel_backend
 }

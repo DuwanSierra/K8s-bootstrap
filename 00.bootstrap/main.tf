@@ -25,8 +25,9 @@ locals {
   kubeconfig_ready          = fileexists(local.kubeconfig_ready_marker)
   kubeconfig_placeholder    = abspath("${path.module}/placeholder-kubeconfig.yaml")
   effective_kubeconfig_path = local.kubeconfig_ready ? local.kubeconfig_path : local.kubeconfig_placeholder
-  cni_base_dir              = abspath("${local.repo_root}/11.CNI-install")
-  cni_path                  = abspath("${local.cni_base_dir}/${var.cni_variant}")
+
+  argocd_ready_marker = "${local.artifacts_dir}/.argocd_ready"
+  argocd_ready        = fileexists(local.argocd_ready_marker)
 }
 
 provider "kubernetes" {
@@ -49,7 +50,6 @@ module "k3s" {
   region          = var.region
   server_count    = var.server_count
   agent_count     = var.agent_count
-  flannel_backend = var.flannel_backend
   database_user   = var.database_user
 }
 
@@ -89,33 +89,29 @@ resource "null_resource" "fetch_kubeconfig" {
   }
 }
 
-resource "null_resource" "apply_cni" {
-  count      = local.kubeconfig_ready ? 1 : 0
-  depends_on = [null_resource.fetch_kubeconfig]
-
-  triggers = {
-    cni_variant          = var.cni_variant
-    cni_kustomization_id = filesha256("${local.cni_path}/kustomization.yaml")
-  }
-
-  provisioner "local-exec" {
-    environment = {
-      KUBECONFIG = local.kubeconfig_path
-    }
-    command = format("kubectl apply -k %s", local.cni_path)
-  }
-}
-
 module "argocd" {
   count  = local.kubeconfig_ready ? 1 : 0
   source = "../20.argo-cd-install"
 
   argocd_admin_password  = var.argocd_admin_password
-  bootstrap_dependency   = length(null_resource.apply_cni) > 0 ? null_resource.apply_cni[0].id : ""
+}
+
+resource "null_resource" "mark_argocd_ready" {
+  count      = local.kubeconfig_ready ? 1 : 0
+  depends_on = [module.argocd]
+
+  triggers = {
+    argocd_namespace = length(module.argocd) > 0 ? module.argocd[0].namespace_name : ""
+  }
+
+  provisioner "local-exec" {
+    command = "touch ${local.argocd_ready_marker}"
+  }
 }
 
 module "argocd_apps" {
-  count  = local.kubeconfig_ready ? 1 : 0
+  count      = local.argocd_ready ? 1 : 0
+  depends_on = [null_resource.mark_argocd_ready]
   source = "../30.apps-of-apps-install"
 
   argocd_namespace           = var.argocd_namespace

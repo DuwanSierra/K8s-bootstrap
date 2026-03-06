@@ -37,30 +37,11 @@ variable "agent_count" {
   description = "Cantidad de nodos agent (workers)"
   default     = 1
 }
-
-variable "flannel_backend" {
-  type        = string
-  description = "Backend configurado en el módulo de K3s (usar 'none' si se instalará otro CNI)"
-  default     = "none"
-}
-
 variable "database_user" {
   type        = string
   description = "Usuario de la base de datos administrada por el módulo K3s"
   default     = "k3s_default_user"
 }
-
-variable "cni_variant" {
-  type        = string
-  description = "Nombre de la carpeta dentro de 11.CNI-install que se aplicará"
-  default     = "Calico"
-
-  validation {
-    condition     = fileexists(abspath("${path.module}/../11.CNI-install/${var.cni_variant}/kustomization.yaml"))
-    error_message = "La carpeta del CNI seleccionado no contiene un kustomization.yaml válido."
-  }
-}
-
 variable "kubeconfig_context" {
   type        = string
   description = "Contexto de kubeconfig a usar; dejar vacío para usar el contexto embebido"
