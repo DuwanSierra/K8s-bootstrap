@@ -19,6 +19,9 @@ resource "kubernetes_manifest" "argocd_root_app" {
         repoURL        = var.argocd_root_repo_url
         targetRevision = var.argocd_root_repo_revision
         path           = var.argocd_root_repo_path
+        directory = {
+          recurse = true
+        }
       }
 
       destination = {
