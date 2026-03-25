@@ -51,6 +51,7 @@ module "k3s" {
   server_count    = var.server_count
   agent_count     = var.agent_count
   database_user   = var.database_user
+  agent_size      = var.agent_size
 }
 
 locals {

@@ -88,3 +88,8 @@ variable "argocd_root_repo_path" {
   description = "Ruta relativa dentro del repo para la app raíz"
   default     = "apps"
 }
+
+variable "agent_size" {
+  type = string
+  description = "Tamaño del droplet para los agentes"
+}

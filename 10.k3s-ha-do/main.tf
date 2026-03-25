@@ -8,8 +8,9 @@ module "k3s" {
   do_token             = var.do_token
   ssh_key_fingerprints = [data.digitalocean_ssh_key.this.fingerprint]
 
-  region       = var.region
-  server_count = var.server_count
-  agent_count  = var.agent_count
+  region        = var.region
+  server_count  = var.server_count
+  agent_count   = var.agent_count
   database_user = var.database_user
+  agent_size    = var.agent_size
 }

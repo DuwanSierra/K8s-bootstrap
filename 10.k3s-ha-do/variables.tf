@@ -23,3 +23,7 @@ variable "database_user" {
   type    = string
   default = "k3s_default_user"
 }
+
+variable "agent_size" {
+  type = string
+}
