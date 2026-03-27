@@ -14,6 +14,7 @@ apply:
 
 destroy:
 	# Remove k8s-side resources from state — DO destroys them anyway when droplets die
+	terraform state rm module.install_secrets || true
 	terraform state rm module.argocd_apps || true
 	terraform state rm module.argocd || true
 	terraform state rm null_resource.mark_argocd_ready || true

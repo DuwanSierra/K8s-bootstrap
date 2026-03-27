@@ -89,7 +89,19 @@ variable "argocd_root_repo_path" {
   default     = "apps"
 }
 
+variable "cni_results_git_user" {
+  type        = string
+  description = "Usuario Git para crear el secret de resultados CNI"
+  sensitive   = true
+}
+
+variable "cni_results_git_token" {
+  type        = string
+  description = "Token PAT Git para crear el secret de resultados CNI"
+  sensitive   = true
+}
+
 variable "agent_size" {
-  type = string
+  type        = string
   description = "Tamaño del droplet para los agentes"
 }
