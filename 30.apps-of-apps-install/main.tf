@@ -65,7 +65,7 @@ resource "kubernetes_manifest" "cni_test_iperf_app" {
       source = {
         repoURL        = var.argocd_root_repo_url
         targetRevision = var.argocd_root_repo_revision
-        path           = "overlays/cni/${var.cni_provider}/cni_test_iperf"
+        path           = "overlays/cni/${var.cni_provider}"
       }
 
       destination = {
