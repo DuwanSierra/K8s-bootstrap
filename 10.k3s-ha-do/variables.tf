@@ -27,3 +27,9 @@ variable "database_user" {
 variable "agent_size" {
   type = string
 }
+
+variable "cni_provider" {
+  type        = string
+  description = "CNI plugin: flannel, calico, cilium o antrea"
+  default     = "flannel"
+}

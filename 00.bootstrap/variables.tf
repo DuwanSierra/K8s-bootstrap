@@ -105,3 +105,13 @@ variable "agent_size" {
   type        = string
   description = "Tamaño del droplet para los agentes"
 }
+
+variable "cni_provider" {
+  type        = string
+  description = "CNI plugin a instalar: flannel (nativo k3s), calico, cilium o antrea"
+  default     = "flannel"
+  validation {
+    condition     = contains(["flannel", "calico", "cilium", "antrea"], var.cni_provider)
+    error_message = "CNI válidos: flannel, calico, cilium, antrea."
+  }
+}

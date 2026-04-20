@@ -30,3 +30,9 @@ variable "bootstrap_dependency" {
   default     = ""
 }
 
+variable "cni_provider" {
+  type        = string
+  description = "CNI plugin activo; determina qué overlay de Kustomize usan los apps de pruebas"
+  default     = "flannel"
+}
+

@@ -52,6 +52,7 @@ module "k3s" {
   agent_count   = var.agent_count
   database_user = var.database_user
   agent_size    = var.agent_size
+  cni_provider  = var.cni_provider
 }
 
 locals {
@@ -121,6 +122,7 @@ module "argocd_apps" {
   argocd_root_repo_revision = var.argocd_root_repo_revision
   argocd_root_repo_path     = var.argocd_root_repo_path
   bootstrap_dependency      = length(module.argocd) > 0 ? module.argocd[0].namespace_name : ""
+  cni_provider              = var.cni_provider
 }
 
 module "install_secrets" {

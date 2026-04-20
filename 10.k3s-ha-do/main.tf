@@ -13,4 +13,5 @@ module "k3s" {
   agent_count   = var.agent_count
   database_user = var.database_user
   agent_size    = var.agent_size
+  cni_provider  = var.cni_provider
 }
