@@ -112,6 +112,16 @@ variable "cni_provider" {
   default     = "flannel"
   validation {
     condition     = contains(["flannel", "calico", "cilium", "antrea"], var.cni_provider)
-    error_message = "CNI válidos: flannel, calico, cilium, antrea."
+    error_message = "CNI validos: flannel, calico, cilium, antrea."
+  }
+}
+
+variable "cni_np_use_case" {
+  type        = string
+  description = "Caso de uso de Network Policies activo en cni-np-test. Vacio = deshabilitado (Flannel siempre vacio). Valores: zero-trust | multi-tier | egress-block"
+  default     = ""
+  validation {
+    condition     = contains(["", "zero-trust", "multi-tier", "egress-block"], var.cni_np_use_case)
+    error_message = "cni_np_use_case debe ser: '' | 'zero-trust' | 'multi-tier' | 'egress-block'."
   }
 }

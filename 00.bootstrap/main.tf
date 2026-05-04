@@ -123,13 +123,43 @@ module "argocd_apps" {
   argocd_root_repo_path     = var.argocd_root_repo_path
   bootstrap_dependency      = length(module.argocd) > 0 ? module.argocd[0].namespace_name : ""
   cni_provider              = var.cni_provider
+  cni_np_use_case           = var.cni_np_use_case
 }
 
+# Secret en namespace cni-test (baseline benchmark)
 module "install_secrets" {
   count      = local.argocd_ready ? 1 : 0
   depends_on = [module.argocd_apps]
   source     = "../40.install-secrets"
 
-  git_user  = var.cni_results_git_user
-  git_token = var.cni_results_git_token
+  git_user         = var.cni_results_git_user
+  git_token        = var.cni_results_git_token
+  secret_namespace = "cni-test"
+}
+
+# Namespace cni-np-test creado por Terraform para garantizar su existencia antes del secret.
+# ArgoCD tambien lo crea via CreateNamespace=true, pero este resource garantiza el orden.
+resource "kubernetes_namespace_v1" "cni_np_test" {
+  count = (local.argocd_ready && var.cni_provider != "flannel" && var.cni_np_use_case != "") ? 1 : 0
+
+  metadata {
+    name = "cni-np-test"
+    labels = {
+      "app.kubernetes.io/part-of"      = "cni-np-test"
+      "purpose"                        = "network-policy-benchmark"
+      "kubernetes.io/metadata.name"    = "cni-np-test"
+    }
+  }
+}
+
+# Secret en namespace cni-np-test (pruebas de Network Policies)
+# Solo se crea cuando hay un caso de uso activo y el CNI soporta NPs.
+module "install_secrets_np" {
+  count      = (local.argocd_ready && var.cni_provider != "flannel" && var.cni_np_use_case != "") ? 1 : 0
+  depends_on = [kubernetes_namespace_v1.cni_np_test]
+  source     = "../40.install-secrets"
+
+  git_user         = var.cni_results_git_user
+  git_token        = var.cni_results_git_token
+  secret_namespace = "cni-np-test"
 }
