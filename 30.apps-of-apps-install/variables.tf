@@ -36,3 +36,19 @@ variable "cni_provider" {
   default     = "flannel"
 }
 
+variable "cni_np_use_case" {
+  type        = string
+  description = <<-EOT
+    Caso de uso de Network Policies activo. Determina el overlay de NP desplegado en cni-np-test.
+    Valores válidos: "zero-trust" | "multi-tier" | "egress-block" | "" (deshabilitado)
+    Flannel siempre queda en "" (no soporta NetworkPolicies).
+    Cambiar este valor hace que ArgoCD pruneé las NPs del caso anterior y aplique el nuevo.
+  EOT
+  default     = ""
+
+  validation {
+    condition     = contains(["", "zero-trust", "multi-tier", "egress-block"], var.cni_np_use_case)
+    error_message = "cni_np_use_case debe ser uno de: '' | 'zero-trust' | 'multi-tier' | 'egress-block'."
+  }
+}
+

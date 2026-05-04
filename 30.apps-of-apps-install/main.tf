@@ -128,3 +128,52 @@ resource "kubernetes_manifest" "cni_resource_exporter_app" {
     }
   }
 }
+
+# App de pruebas de Network Policies. Solo se crea cuando:
+#   1. El CNI soporta NetworkPolicies (no Flannel)
+#   2. Se especifica un caso de uso activo (cni_np_use_case != "")
+# El path selecciona el overlay CNI+use-case correcto, que incluye:
+#   - base: namespace, demo app, iperf server, CronJobs de benchmark
+#   - use-case-N: NetworkPolicies del caso activo
+#   - overlay CNI: diferenciadores (CiliumNP L7, Antrea Tiers)
+resource "kubernetes_manifest" "cni_np_test_app" {
+  count = (var.cni_provider != "flannel" && var.cni_np_use_case != "") ? 1 : 0
+
+  depends_on = [kubernetes_manifest.cni_test_iperf_app]
+  manifest = {
+    apiVersion = "argoproj.io/v1alpha1"
+    kind       = "Application"
+    metadata = {
+      name      = "cni-np-test"
+      namespace = var.argocd_namespace
+      annotations = {
+        "argocd.argoproj.io/sync-wave" = "3"
+      }
+    }
+    spec = {
+      project = "default"
+
+      source = {
+        repoURL        = var.argocd_root_repo_url
+        targetRevision = var.argocd_root_repo_revision
+        path           = "network_policies/overlays/${var.cni_provider}/${var.cni_np_use_case}"
+      }
+
+      destination = {
+        server    = "https://kubernetes.default.svc"
+        namespace = "cni-np-test"
+      }
+
+      syncPolicy = {
+        automated = {
+          prune    = true
+          selfHeal = true
+        }
+        syncOptions = [
+          "CreateNamespace=true",
+          "ServerSideApply=true"
+        ]
+      }
+    }
+  }
+}
